@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Author : Arun Kumar Madas</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<p>#-------------------------------------------------------------------------------</p>
+
+<h3>Author : Arun Kumar Madas</h3>
+
+<h3>Date   : 04/24/2015</h3>
+
+<h3>Course : Statistical Inference - Project (Part 2 - ToothGrowth data analysis)</h3>
+
+<p>#-------------------------------------------------------------------------------</p>
+
+<h2>Title : Analysis of ToothGrowth data available in R datasets</h2>
+
+<h3>Overview :</h3>
+
+<p>In this project we&#39;re going to analyze the ToothGrowth data in the R datasets package. </p>
+
+<h1>1. Load the ToothGrowth data and perform some basic exploratory data analyses</h1>
+
+<pre><code class="r"># load the datasets package available in R
+library(datasets)
+#check the data available in the ToothGrowth
+head(ToothGrowth)
+</code></pre>
+
+<pre><code>##    len supp dose
+## 1  4.2   VC  0.5
+## 2 11.5   VC  0.5
+## 3  7.3   VC  0.5
+## 4  5.8   VC  0.5
+## 5  6.4   VC  0.5
+## 6 10.0   VC  0.5
+</code></pre>
+
+<p>Here we are analyzing The Effect of Vitamin C on Tooth Growth in Guinea Pigs.
+If you need to read more details about the ToothGrowth data it is available here <a href="https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/ToothGrowth.html">https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/ToothGrowth.html</a></p>
+
+<p>The response is the length of odontoblasts (teeth) in each of 10 guinea pigs at each of three dose levels of Vitamin C (0.5, 1, and 2 mg) with each of two delivery methods (orange juice or ascorbic acid).</p>
+
+<p>The data frame ToothGrowth contains three columns</p>
+
+<p>[,1]    len numeric Tooth length
+[,2]    supp    factor  Supplement type (VC or OJ).
+[,3]    dose    numeric Dose in milligrams.</p>
+
+<p>Lets perform some sample exploratory data analysis:</p>
+
+<ol>
+<li>Calculate the total tooth per each of the supplement types (OJ=Orange Juice or VC=Ascorbic Acid).</li>
+</ol>
+
+<pre><code class="r"> total_tooth_per_supplement_type &lt;- aggregate(len~supp,ToothGrowth,sum,na.action=na.omit)
+ total_tooth_per_supplement_type
+</code></pre>
+
+<pre><code>##   supp   len
+## 1   OJ 619.9
+## 2   VC 508.9
+</code></pre>
+
+<p>Plot for total tooth per each of the supplement types (OJ=Orange Juice or VC=Ascorbic Acid) and their counts.</p>
+
+<pre><code class="r">library(ggplot2)
+ ggplot(data = total_tooth_per_supplement_type, aes(x=supp,y=len, fill=factor(len))) +
+ geom_bar(stat = &quot;identity&quot;) +
+ xlab(&quot;Supplement Types (OJ=Orange Juice or VC=Ascorbic Acid)&quot;) + ylab(&quot;Total Length of Teeth&quot;) + ggtitle(&quot;Total Teeth for Supplement Types&quot;)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3"> </p>
+
+<ol>
+<li>Calculate the total tooth per each of the Vitamin C levels (0.5, 1, and 2 mg)</li>
+</ol>
+
+<pre><code class="r"> total_tooth_per_dose_type &lt;- aggregate(len~dose,ToothGrowth,sum,na.action=na.omit)
+ total_tooth_per_dose_type
+</code></pre>
+
+<pre><code>##   dose   len
+## 1  0.5 212.1
+## 2  1.0 394.7
+## 3  2.0 522.0
+</code></pre>
+
+<p>Plot for total tooth per each of the Vitamin C levels (0.5, 1, and 2 mg) </p>
+
+<pre><code class="r">library(ggplot2)
+ total_tooth_per_dose_type[,1]&lt;-as.character(total_tooth_per_dose_type[,1])
+ ggplot(data = total_tooth_per_dose_type, aes(x=(dose),y=len, fill=factor(len))) +
+ geom_bar(stat = &quot;identity&quot;) +
+ xlab(&quot;Vitamin C levels (0.5, 1, and 2 mg)&quot;) + ylab(&quot;Total Length of Teeth&quot;) + ggtitle(&quot;Total Teeth for Vitamin C Levels&quot;)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5"> </p>
+
+<h1>2. Provide a basic summary of the data.</h1>
+
+<p>calculate mean and standard deviation of length data</p>
+
+<pre><code class="r">summary(ToothGrowth)
+</code></pre>
+
+<pre><code>##       len        supp         dose      
+##  Min.   : 4.20   OJ:30   Min.   :0.500  
+##  1st Qu.:13.07   VC:30   1st Qu.:0.500  
+##  Median :19.25           Median :1.000  
+##  Mean   :18.81           Mean   :1.167  
+##  3rd Qu.:25.27           3rd Qu.:2.000  
+##  Max.   :33.90           Max.   :2.000
+</code></pre>
+
+<pre><code class="r">mean(ToothGrowth$len)
+</code></pre>
+
+<pre><code>## [1] 18.81333
+</code></pre>
+
+<pre><code class="r">sd(ToothGrowth$len)
+</code></pre>
+
+<pre><code>## [1] 7.649315
+</code></pre>
+
+<p>Lets calculate the mean, sd of the supp vs dose</p>
+
+<pre><code class="r"> mean_tooth_per_supplement_type &lt;- aggregate(len~supp,ToothGrowth,mean,na.action=na.omit)
+ mean_tooth_per_supplement_type
+</code></pre>
+
+<pre><code>##   supp      len
+## 1   OJ 20.66333
+## 2   VC 16.96333
+</code></pre>
+
+<pre><code class="r"> mean_tooth_per_dose_type &lt;- aggregate(len~dose,ToothGrowth,mean,na.action=na.omit)
+ mean_tooth_per_dose_type
+</code></pre>
+
+<pre><code>##   dose    len
+## 1  0.5 10.605
+## 2  1.0 19.735
+## 3  2.0 26.100
+</code></pre>
+
+<h1>3. Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose. (Only use the techniques from class, even if there&#39;s other approaches worth considering)</h1>
+
+<p>The tooth growth was compared by supplement for each dosage under the null hypothesis that each supplement has same effort at certain dosage on the tooth</p>
+
+<p>H<em>0: \mu</em>{OJ|0.5} = \mu<em>{VC</em>|0.5}$
+H<em>0: \mu</em>{OJ|1.0} = \mu<em>{VC</em>|1.0}$
+H<em>0: \mu</em>{OJ|2.0} = \mu<em>{VC</em>|2.0}$</p>
+
+<p>get dosage data </p>
+
+<pre><code class="r">dose0.5 &lt;- ToothGrowth[ToothGrowth$dose==0.5,]
+dose1.0 &lt;- ToothGrowth[ToothGrowth$dose==1.0,]
+dose2.0 &lt;- ToothGrowth[ToothGrowth$dose==2.0,]
+</code></pre>
+
+<p>Conduct a T-Test between supplements</p>
+
+<pre><code class="r">test0.5 &lt;-t.test(len~supp, paired=FALSE, var.equal=FALSE, data=dose0.5)
+test0.5$p.value
+</code></pre>
+
+<pre><code>## [1] 0.006358607
+</code></pre>
+
+<pre><code class="r">test0.5$conf[1]
+</code></pre>
+
+<pre><code>## [1] 1.719057
+</code></pre>
+
+<pre><code class="r">test1.0 &lt;-t.test(len~supp, paired=FALSE, var.equal=FALSE, data=dose1.0)
+test1.0$p.value
+</code></pre>
+
+<pre><code>## [1] 0.001038376
+</code></pre>
+
+<pre><code class="r">test1.0$conf[1]
+</code></pre>
+
+<pre><code>## [1] 2.802148
+</code></pre>
+
+<pre><code class="r">test2.0 &lt;-t.test(len~supp, paired=FALSE, var.equal=FALSE, data=dose2.0)
+test2.0$p.value
+</code></pre>
+
+<pre><code>## [1] 0.9638516
+</code></pre>
+
+<pre><code class="r">test2.0$conf[1]
+</code></pre>
+
+<pre><code>## [1] -3.79807
+</code></pre>
+
+<p>Dosage 1.0 and 1.5 have significant p-values of 0.006359 and 0.001038 resp.
+mean is very high between supplements
+Dosage 1.0 has confidence interval of 1.719-8.781
+Dosage 2 has confidence interval 2.802-9.058
+Dosage 3 has high p-value and confidence interval below zero.</p>
+
+<h1>Conclusion</h1>
+
+<p>Orange Juice and Ascorbic Acide have lower dosages of Vitamin C  according to t-test
+Orance juice has long tooth for dosages 0.5 to 1.0mg</p>
+
+<h1>Assumptions</h1>
+
+<p>Supplements have treatment effect.
+ Samples are unpaired, with unequal variances
+ Identical size fit </p>
+
+</body>
+
+</html>
